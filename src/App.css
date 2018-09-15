@@ -76,6 +76,7 @@
 
 .CardBack {  
   background-color: var(--lighter-gray);
+  color: var(--dark-gray);
 }
 
 .CardFront-content,
