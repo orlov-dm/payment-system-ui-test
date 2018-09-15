@@ -2,17 +2,18 @@
   --black: #111;
   --blue: #0074D9;
   --navy: #001f3f;
-  --green: #2ECC40;
+  --green: rgb(7, 146, 23);
   --olive: rgb(24, 92, 63);
   --lighter-gray: #DDD;
   --light-gray: #AAA;  
   --gray: #777;
   --dark-gray: #555;
+  --silver: #DDD;
   --orange: #FF851B;
-  --red: #FF4136;
+  --red: rgb(119, 24, 19);
 
   --text-color: var(--light-gray);
-  --border-color: var(--gray);
+  --border-color: var(--light-gray);
   --light-border-color: var(--light-gray);  
 }
 
@@ -25,7 +26,8 @@
 .CardBack {
   width: 350px;
   height: 200px;
-  border: 1px solid var(--border-color);
+  border-right: 1px solid var(--light-border-color);
+  border-bottom: 1px solid var(--light-border-color);
   border-radius: 0.5em;
   display: flex;
   flex-direction: column;
@@ -48,6 +50,29 @@
 .mir .CardFront {
   background-color: var(--olive);
 }
+
+.CardForm.maestro {
+  color: var(--dark-gray);
+}
+.maestro .CardFront {
+  background-color: var(--silver);  
+}
+
+.alfa.mastercard .CardFront, 
+.alfa.mir .CardFront,
+.alfa.visa .CardFront,
+.alfa.maestro .CardFront {
+  background-color: var(--red);
+}
+
+.sberbank.mastercard .CardFront, 
+.sberbank.mir .CardFront,
+.sberbank.visa .CardFront,
+.sberbank.maestro .CardFront {
+  background-color: var(--green);
+}
+
+
 
 .CardBack {  
   background-color: var(--lighter-gray);
@@ -72,7 +97,7 @@
 
 .CardFront-content > :not(:last-child),
 .CardBack-content > :not(:last-child) {
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
 }
 .CardFront-content > div :not(:last-child),
 .CardBack-content > div :not(:last-child) {
@@ -89,7 +114,6 @@
   margin-left: 1.5em;  
   border: 1px solid var(--light-border-color);
   border-radius: 0.2em;
-  line-height: 1.5;
 }
 
 .CardBack-content input {
@@ -98,16 +122,31 @@
   text-align: center;
 }
 
+#card_number {
+  max-width: 10em;
+}
+#card_expiry_date {
+  max-width: 3em;
+}
+
 .CardFront-content input:hover,
 .CardBack-content input:hover {
   border: 1px solid var(--border-color);
 }
 
 .CardLogo {
-  height: 8%;
-  padding: 1em 1em 0.5em 0.5em;
-  display: flex;
+  height: 8%;  
+  display: flex;  
+}
+
+.CardLogo.bank {
+  justify-content: flex-start;
+  padding: 1em 0.5em 0.5em 1em;
+}
+
+.CardLogo.payment {
   justify-content: flex-end;
+  padding: 0.5em 1em 1em 0.5em;
 }
 
 .CardLogo img {

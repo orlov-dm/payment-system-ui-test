@@ -3,33 +3,45 @@ import React, { Component } from 'react';
 import CardFront from './CardFront';
 import CardBack from './CardBack';
 
-import { cardNumberToType } from '../core';
+import { cardNumberToPaymentType, cardNumberToBankType } from '../core';
 import * as Constants from '../constants';
 
 class CardForm extends Component {
     state = {
-        cardType: null,
+        cardTypePayment: null,
+        cardTypeBank: null,
         cardNumber: '',
-        expiryDate: '',
+        cardExpDate: '',
         cvcCode: '',
-    };
+    };    
 
     constructor(props) {
         super(props);
 
         this.onNumberChange = this.onNumberChange.bind(this);
+        this.onExpDateChange = this.onExpDateChange.bind(this);
         this.onCvcChange = this.onCvcChange.bind(this);
     }
 
     render() {
-        const { cardType, cardNumber, cvcCode } = this.state;
-        const className = `CardForm ${cardType}`;
+        const { 
+            cardTypePayment,
+            cardTypeBank,
+            cardNumber,
+            cardExpDate,
+            cvcCode
+        } = this.state;
+        const className = `CardForm ${cardTypePayment} ${cardTypeBank}`;
         return (
             <form id='card_form' className={className}>
                 <CardFront 
                     cardNumber={cardNumber}
-                    cardType={cardType}
-                    onNumberChange={this.onNumberChange}>
+                    cardExpDate={cardExpDate}
+                    cardTypePayment={cardTypePayment}
+                    cardTypeBank={cardTypeBank}
+                    onNumberChange={this.onNumberChange}
+                    onExpDateChange={this.onExpDateChange}
+                >
                 </CardFront>
                 <CardBack 
                     cvcCode={cvcCode}
@@ -39,36 +51,71 @@ class CardForm extends Component {
         );
     }
 
-    onNumberChange(event) {                    
-        const cardNumber = event.target.value;
-        const trimmedCardNumber = cardNumber.replace(/\s+/g, '');
-        if(trimmedCardNumber.length > Constants.CARD_NUMBER_MAX_LENGTH) {
-            console.log('numberChangeBad', cardNumber);
-            return false;
-        }
+    onNumberChange(event) {                         
+        const input = event.target;     
+        const cardNumber = input.value;        
+        console.log(cardNumber)        
         const newState = {
-            cardNumber: trimmedCardNumber.replace(/(.{4})/g, '$1 ').trim(),
+            cardNumber: cardNumber,
             cardType: null,
         }
         if(cardNumber.length) {
-            const cardTypeNumber = Number(trimmedCardNumber[0]);
-            newState.cardType = cardNumberToType(cardTypeNumber);
+            const trimmedCardNumber = cardNumber.replace(/\s+/g, '').trim();
+            newState.cardTypePayment = cardNumberToPaymentType(trimmedCardNumber);            
+            newState.cardTypeBank = cardNumberToBankType(trimmedCardNumber, newState.cardTypePayment);            
         }
-        console.log('numberChange', newState);
         this.setState(newState);
     }
 
-    onExpiryDateChange(event) {        
-        const numberString = event.target.value;
+    validateExpDate(cardExpDate) {
+        const [month, year] = cardExpDate.split('/');
+        console.log(month);
+        const monthNumber = Number(month);
+        const maxMonth = 12;
+        if(!Number.isNaN(monthNumber)) {
+            if(monthNumber === 0) {
+                const newCardExpDate = `01/${year}`;
+                return this.validateExpDate(newCardExpDate);
+            }
+            if(monthNumber > 12) {                
+                const newCardExpDate = `${maxMonth}/${year}`;
+                return this.validateExpDate(newCardExpDate);
+            }
+        }
+        const yearNumber = Number(year);            
+        
+        const currentMonth = Number((new Date()).getMonth() + 1);        
+        const currentYear = Number((new Date()).getFullYear().toString().slice(-2));
+        const maxYear = currentYear + 10;
+
+        if(!Number.isNaN(monthNumber) && !Number.isNaN(yearNumber)) {            
+            if(monthNumber < currentMonth && yearNumber === currentYear) {                
+                const newCardExpDate = `${currentMonth.toString().padStart(2, '0')}/${currentYear}`;
+                return this.validateExpDate(newCardExpDate);
+            }
+        }
+        
+        if(!Number.isNaN(yearNumber)) {
+            //equal or more than current
+            if(yearNumber < currentYear) {                                
+                const newCardExpDate = `${month}/${currentYear}`;
+                return this.validateExpDate(newCardExpDate);
+            }
+            //e.g next 10 years
+            if(yearNumber > maxYear) {                
+                const newCardExpDate = `${month}/${maxYear}`;
+                return this.validateExpDate(newCardExpDate);
+            }
+        }        
+
+        return cardExpDate;
+    }
+
+    onExpDateChange(event) {        
+        const cardExpDate = event.target.value;
         const newState = {            
-            cardNumber: numberString,
-            cardType: null,
-        }
-        if(numberString.length) {
-            const cardTypeNumber = Number(numberString[0]);
-            newState.cardType = cardNumberToType(cardTypeNumber);
-        }
-        console.log('numberChange', newState);
+            cardExpDate: this.validateExpDate(cardExpDate)
+        };
         this.setState(newState);
     }
 
