@@ -1,0 +1,132 @@
+:root {
+  --black: #111;
+  --blue: #0074D9;
+  --navy: #001f3f;
+  --green: #2ECC40;
+  --olive: rgb(24, 92, 63);
+  --lighter-gray: #DDD;
+  --light-gray: #AAA;  
+  --gray: #777;
+  --dark-gray: #555;
+  --orange: #FF851B;
+  --red: #FF4136;
+
+  --text-color: var(--light-gray);
+  --border-color: var(--gray);
+  --light-border-color: var(--light-gray);  
+}
+
+.CardForm {  
+  margin: 0;
+  color: var(--text-color);  
+}
+
+.CardFront,
+.CardBack {
+  width: 350px;
+  height: 200px;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5em;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.CardFront {  
+  background-color: var(--dark-gray);
+  z-index: 1;
+}
+
+.mastercard .CardFront {
+  background-color: var(--black);
+}
+
+.visa .CardFront {
+  background-color: var(--navy);
+}
+
+.mir .CardFront {
+  background-color: var(--olive);
+}
+
+.CardBack {  
+  background-color: var(--lighter-gray);
+}
+
+.CardFront-content,
+.CardBack-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1em;
+}
+
+.CardBack-content {
+  align-items: flex-end;
+}
+
+.CardBack-content > div * {
+  width: 80px;
+}
+
+.CardFront-content > :not(:last-child),
+.CardBack-content > :not(:last-child) {
+  margin-bottom: 2em;
+}
+.CardFront-content > div :not(:last-child),
+.CardBack-content > div :not(:last-child) {
+  margin-bottom: 1em;
+}
+
+.CardFront-content label,
+.CardBack-content label {
+  display: block;  
+}
+
+.CardFront-content input,
+.CardBack-content input  {
+  margin-left: 1.5em;  
+  border: 1px solid var(--light-border-color);
+  border-radius: 0.2em;
+  line-height: 1.5;
+}
+
+.CardBack-content input {
+  margin-left: 0;
+  line-height: 2;
+  text-align: center;
+}
+
+.CardFront-content input:hover,
+.CardBack-content input:hover {
+  border: 1px solid var(--border-color);
+}
+
+.CardLogo {
+  height: 8%;
+  padding: 1em 1em 0.5em 0.5em;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.CardLogo img {
+  height: 100%;
+}
+
+.CardBack {
+  position: relative;
+  top: -170px;
+  left: 110px;  
+}
+
+.CardBack-line {
+  height: 20%;
+  background-color: var(--light-gray);
+  margin-top: 2em;
+  margin-bottom: 0.5em;
+}
+
+.CardBack-description {
+  font-size: 0.7em;
+}
