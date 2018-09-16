@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import InputMask from 'react-input-mask';
+import Description from './Description';
 
 class CardBack extends Component {
     render() {
@@ -9,8 +11,14 @@ class CardBack extends Component {
                 <div className='CardBack-content'>
                     <div>
                         <label htmlFor='card_cvc'>CVC CODE</label>
-                        <input id='card_cvc' value={cvcCode} onChange={onCvcChange}></input>
-                        <div className='CardBack-description'>Three digits from the back of the card</div>
+                        <InputMask 
+                            id='card_cvc'
+                            value={cvcCode}
+                            onChange={onCvcChange}
+                            mask='999'
+                        >
+                        </InputMask>
+                        <Description value='Three digits from the back of the card'/>
                     </div>                            
                 </div>
             </div>

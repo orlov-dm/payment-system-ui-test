@@ -12,22 +12,50 @@
   --orange: #FF851B;
   --red: rgb(119, 24, 19);
 
-  --text-color: var(--light-gray);
-  --border-color: var(--light-gray);
-  --light-border-color: var(--light-gray);  
+  --text-color: var(--dark-gray);
+  --light-text-color: var(--lighter-gray);
+  --border-color: var(--light-gray);    
+}
+
+input {
+  border-radius: 0.2em;
+  line-height: 2;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+
+button {
+  background-color: var(--blue);
+  border: none;
+  color: var(--light-text-color);
+  border-radius: 0.2em;
+  min-width: 15em;
+  min-height: 2.5em;
+  font-size: 1.2em;
 }
 
 .CardForm {  
-  margin: 0;
-  color: var(--text-color);  
+  margin: 0;    
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.CardForm >:not(:last-child) {
+  margin-bottom: 1em;
+}
+
+.Card {
+  color: var(--light-text-color);
 }
 
 .CardFront,
 .CardBack {
   width: 350px;
   height: 200px;
-  border-right: 1px solid var(--light-border-color);
-  border-bottom: 1px solid var(--light-border-color);
+  border-right: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
   border-radius: 0.5em;
   display: flex;
   flex-direction: column;
@@ -84,7 +112,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   padding: 1em;
 }
 
@@ -96,13 +124,9 @@
   width: 80px;
 }
 
-.CardFront-content > :not(:last-child),
-.CardBack-content > :not(:last-child) {
-  margin-bottom: 1.5em;
-}
-.CardFront-content > div :not(:last-child),
-.CardBack-content > div :not(:last-child) {
-  margin-bottom: 1em;
+.CardFront-content :not(:last-child),
+.CardBack-content :not(:last-child) {
+  margin-bottom: 0.5em;
 }
 
 .CardFront-content label,
@@ -111,23 +135,18 @@
 }
 
 .CardFront-content input,
-.CardBack-content input  {
-  margin-left: 1.5em;  
-  border: 1px solid var(--light-border-color);
-  border-radius: 0.2em;
-}
-
-.CardBack-content input {
-  margin-left: 0;
-  line-height: 2;
+.CardBack-content input  {  
+  border: 1px solid var(--border-color);
   text-align: center;
+  line-height: 2;
 }
 
 #card_number {
-  max-width: 10em;
+  max-width: 12em;
 }
-#card_expiry_date {
-  max-width: 3em;
+#card_expiry_date,
+#card_cvc {
+  max-width: 5em;
 }
 
 .CardFront-content input:hover,
@@ -157,10 +176,18 @@
   height: 100%;
 }
 
+.CardFront {
+  position: relative;
+  /* top: -170px;
+  left: 110px;   */
+  left: -55px;
+}
+
 .CardBack {
   position: relative;
   top: -170px;
-  left: 110px;  
+  left: 55px;
+  margin-bottom: -170px;  
 }
 
 .CardBack-line {
@@ -170,6 +197,42 @@
   margin-bottom: 0.5em;
 }
 
-.CardBack-description {
-  font-size: 0.7em;
+.CardAmount {
+  width:100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.CardAmount-value {
+  padding: 1em;
+  width: 100%;
+}
+
+.CardAmount-value input {
+  line-height: 2;
+  padding-left: 1em;
+  width: 90%;
+}
+
+.CardAmount-value:after {
+  position: relative;
+  content: '$';
+  right: 2em;
+}
+
+.Description {
+  font-size: 0.8em;
+}
+
+.CardSubmit {
+  text-align: center;
+}
+
+.CardSubmit >:not(:last-child) {
+  margin-bottom: 1em;
+}
+.CardSubmit .Description {
+  color: var(--light-text-color);
 }

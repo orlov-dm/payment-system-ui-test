@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 
 import CardFront from './CardFront';
 import CardBack from './CardBack';
+import CardAmount from './CardAmount';
 
 import { cardNumberToPaymentType, cardNumberToBankType } from '../core';
-import * as Constants from '../constants';
+import Description from './Description';
 
 class CardForm extends Component {
     state = {
@@ -13,6 +14,7 @@ class CardForm extends Component {
         cardNumber: '',
         cardExpDate: '',
         cvcCode: '',
+        amountToReceive: '',
     };    
 
     constructor(props) {
@@ -21,6 +23,7 @@ class CardForm extends Component {
         this.onNumberChange = this.onNumberChange.bind(this);
         this.onExpDateChange = this.onExpDateChange.bind(this);
         this.onCvcChange = this.onCvcChange.bind(this);
+        this.onAmountToReceiveChange = this.onAmountToReceiveChange.bind(this);
     }
 
     render() {
@@ -29,24 +32,41 @@ class CardForm extends Component {
             cardTypeBank,
             cardNumber,
             cardExpDate,
-            cvcCode
+            cvcCode,
+            amountToReceive,
         } = this.state;
-        const className = `CardForm ${cardTypePayment} ${cardTypeBank}`;
+        const className = `CardForm ${cardTypePayment ? cardTypePayment : ''} ${cardTypeBank ? cardTypeBank : ''}`;
         return (
             <form id='card_form' className={className}>
-                <CardFront 
-                    cardNumber={cardNumber}
-                    cardExpDate={cardExpDate}
-                    cardTypePayment={cardTypePayment}
-                    cardTypeBank={cardTypeBank}
-                    onNumberChange={this.onNumberChange}
-                    onExpDateChange={this.onExpDateChange}
+                <div className='Card'>
+                    <CardFront 
+                        cardNumber={cardNumber}
+                        cardExpDate={cardExpDate}
+                        cardTypePayment={cardTypePayment}
+                        cardTypeBank={cardTypeBank}
+                        onNumberChange={this.onNumberChange}
+                        onExpDateChange={this.onExpDateChange}
+                    >
+                    </CardFront>
+                    <CardBack 
+                        cvcCode={cvcCode}
+                        onCvcChange={this.onCvcChange}>
+                    </CardBack>
+                </div>
+                <CardAmount 
+                    value={amountToReceive}
+                    onChange={this.onAmountToReceiveChange}
                 >
-                </CardFront>
-                <CardBack 
-                    cvcCode={cvcCode}
-                    onCvcChange={this.onCvcChange}>
-                </CardBack>
+                </CardAmount>
+                <div className='CardSubmit'>
+                    <button
+                        type='submit'
+                        // onSumbit={}
+                    >
+                        Pay
+                    </button>
+                    <Description value='The details are protected to PCI DSS standart'></Description>
+                </div>
             </form>
         );
     }
@@ -68,6 +88,9 @@ class CardForm extends Component {
     }
 
     validateExpDate(cardExpDate) {
+        if(!cardExpDate) {
+            return cardExpDate;
+        }
         const [month, year] = cardExpDate.split('/');
         console.log(month);
         const monthNumber = Number(month);
@@ -120,17 +143,21 @@ class CardForm extends Component {
     }
 
     onCvcChange(event) {        
-        const cvcCode = event.target.value;            
-        if(cvcCode.length > 3) {
-            return false;
-        }
-        if(Number.isNaN(Number(cvcCode))) {
+        const cvcCode = event.target.value;
+        this.setState({
+            cvcCode
+        });
+    }
+
+    onAmountToReceiveChange(event) {
+        const amountToReceive = event.target.value;
+        if(amountToReceive > Math.pow(10, 14)) {
             return false;
         }
         this.setState({
-            cvcCode
-        });        
-    }
+            amountToReceive
+        });
+    }    
 }
 
 export default CardForm;
