@@ -148,6 +148,9 @@
 .CardLogo.payment {
   justify-content: flex-end;
   padding: 0.5em 1em 1em 0.5em;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .CardLogo img {
