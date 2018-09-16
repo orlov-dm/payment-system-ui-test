@@ -13,6 +13,7 @@ class CardForm extends Component {
         cardTypeBank: null,
         cardNumber: '',
         cardExpDate: '',
+        cardIssuerName: '',
         cvcCode: '',
         amountToReceive: '',
     };    
@@ -22,8 +23,13 @@ class CardForm extends Component {
 
         this.onNumberChange = this.onNumberChange.bind(this);
         this.onExpDateChange = this.onExpDateChange.bind(this);
+        this.onIssuerNameChange = this.onIssuerNameChange.bind(this);
         this.onCvcChange = this.onCvcChange.bind(this);
         this.onAmountToReceiveChange = this.onAmountToReceiveChange.bind(this);
+    }
+
+    componentDidUpdate() {
+        console.log(this.state);
     }
 
     render() {
@@ -32,6 +38,7 @@ class CardForm extends Component {
             cardTypeBank,
             cardNumber,
             cardExpDate,
+            cardIssuerName,
             cvcCode,
             amountToReceive,
         } = this.state;
@@ -42,10 +49,12 @@ class CardForm extends Component {
                     <CardFront 
                         cardNumber={cardNumber}
                         cardExpDate={cardExpDate}
+                        cardIssuerName={cardIssuerName}
                         cardTypePayment={cardTypePayment}
                         cardTypeBank={cardTypeBank}
                         onNumberChange={this.onNumberChange}
                         onExpDateChange={this.onExpDateChange}
+                        onIssuerNameChange={this.onIssuerNameChange}
                     >
                     </CardFront>
                     <CardBack 
@@ -138,6 +147,18 @@ class CardForm extends Component {
         const cardExpDate = event.target.value;
         const newState = {            
             cardExpDate: this.validateExpDate(cardExpDate)
+        };
+        this.setState(newState);
+    }
+
+    onIssuerNameChange(event) {        
+        const cardIssuerName = event.target.value.toUpperCase();
+        if(!/^([A-Z]*)\s?([A-Z])*$/.test(cardIssuerName)) {
+            return false;
+        }        
+
+        const newState = {
+            cardIssuerName
         };
         this.setState(newState);
     }

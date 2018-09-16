@@ -141,6 +141,13 @@ button {
   line-height: 2;
 }
 
+.CardFront-content-first {
+  display: flex;  
+}
+.CardFront-content-first >:not(:last-child) {
+  margin-right: 1em;
+}
+
 #card_number {
   max-width: 12em;
 }
