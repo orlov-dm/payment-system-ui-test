@@ -10,7 +10,9 @@
   --dark-gray: #555;
   --silver: #DDD;
   --orange: #FF851B;
-  --red: rgb(119, 24, 19);
+  --brown: rgb(119, 24, 19);
+  --red: rgb(252, 96, 88);
+  
 
   --text-color: var(--dark-gray);
   --light-text-color: var(--lighter-gray);
@@ -90,7 +92,7 @@ button {
 .alfa.mir .CardFront,
 .alfa.visa .CardFront,
 .alfa.maestro .CardFront {
-  background-color: var(--red);
+  background-color: var(--brown);
 }
 
 .sberbank.mastercard .CardFront, 
@@ -242,4 +244,53 @@ button {
 }
 .CardSubmit .Description {
   color: var(--light-text-color);
+}
+
+.invalid {
+  outline: var(--red) 2px solid;
+  outline-offset: -2px;
+}
+
+.CardFormError {
+  position: absolute;
+  top: 2em;
+  background-color: var(--red);
+  color: white;
+  animation: appear 1s;  
+  border: 1px solid var(--red);
+  padding: 1em;
+}
+
+.CardFormError-title {
+  font-weight: bold;
+  padding-bottom: 1em;
+  margin-bottom: 1em;
+  border-bottom: 1px solid var(--dark-gray);
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100;
+  }
+}
+
+.SecurityForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+.SecurityForm input {
+  border: 1px solid var(--border-color);
+  text-align: center;
+  line-height: 2; 
+}
+
+
+.CheckoutForm-amount {
+  font-weight: bold;  
 }

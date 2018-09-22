@@ -202,7 +202,7 @@ class CardForm extends Component {
             const { history } = this.props;
             const { amountToReceive } = this.state;
             const code = Math.floor(100000 + Math.random() * 900000);
-            history.push(`/security?${code}`, { amountToReceive });
+            history.push(`/security?${code}`, { amountToReceive, code });
         }
     }
     
