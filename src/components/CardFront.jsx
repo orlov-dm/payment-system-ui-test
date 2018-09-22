@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import CardLogo from './CardLogo';
-import InputMask from 'react-input-mask';
+import ValidationInput from './ValidationInput';
 
 import * as Constants from '../constants';
 
 class CardFront extends Component {
-    
+    constructor() {
+        super();
+        this.validateCardNumber = this.validateCardNumber.bind(this);
+    }
+
     render() {
         const { 
             cardNumber,
@@ -16,8 +20,13 @@ class CardFront extends Component {
             onNumberChange,
             onExpDateChange,
             onIssuerNameChange,
+            errors
         } = this.props;
-        
+        const { 
+            cardNumber: errorCardNumber,
+            cardExpDate: errorCardExpDate,
+            cardIssuerName: errorCardIssuerName
+        } = errors;
         return (
             <div className='CardFront'>
                 <CardLogo
@@ -27,35 +36,38 @@ class CardFront extends Component {
                 <div className='CardFront-content'>
                     <div className='CardFront-content-first'>
                         <div>
-                            <label htmlFor='card_number'>CARD NUMBER</label>
-                            <InputMask
+                            <label htmlFor='card_number'>CARD NUMBER</label>                            
+                            <ValidationInput
                                 id='card_number'
                                 value={cardNumber}
                                 onChange={onNumberChange}
                                 mask='9999 9999 9999 9999'
+                                isValid={errorCardNumber == null}
                             >
-                            </InputMask>
+                            </ValidationInput>
                         </div>
                         <div>
                             <label htmlFor='card_expiry_date'>EXPIRY DATE</label>                        
-                            <InputMask 
+                            <ValidationInput 
                                 id='card_expiry_date'
                                 value={cardExpDate}
                                 onChange={onExpDateChange}
                                 mask='99/99'
+                                isValid={errorCardExpDate == null}
                             >
-                            </InputMask>
+                            </ValidationInput>
                         </div>
                     </div>
                     <div className='CardFront-content-second'>                        
                         <div>
                             <label htmlFor='card_issuer_name'>ISSUER NAME</label>                        
-                            <InputMask 
+                            <ValidationInput 
                                 id='card_issuer_name'
                                 value={cardIssuerName}
-                                onChange={onIssuerNameChange}                                
+                                onChange={onIssuerNameChange}
+                                isValid={errorCardIssuerName == null}                                
                             >
-                            </InputMask>
+                            </ValidationInput>
                         </div>
                     </div>
                 </div>
@@ -67,7 +79,10 @@ class CardFront extends Component {
         );
     }
 
-    
+    validateCardNumber() {
+        const { cardNumber } = this.props;
+        return cardNumber.replace(/[\s_]/g, '').length === 16;
+    }
 }
 
 export default CardFront;

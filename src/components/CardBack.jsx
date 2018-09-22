@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
-import InputMask from 'react-input-mask';
 import Description from './Description';
+import ValidationInput from './ValidationInput';
 
 class CardBack extends Component {
     render() {
-        const { cvcCode, onCvcChange } = this.props;
+        const { cvcCode, onCvcChange, errors } = this.props;
+        const { 
+            cvcCode: errorCvcCode,
+        } = errors;
         return (
             <div className='CardBack'>
                 <div className='CardBack-line'></div>
                 <div className='CardBack-content'>
                     <div>
                         <label htmlFor='card_cvc'>CVC CODE</label>
-                        <InputMask 
+                        <ValidationInput 
                             id='card_cvc'
                             value={cvcCode}
                             onChange={onCvcChange}
                             mask='999'
+                            isValid={errorCvcCode == null}
                         >
-                        </InputMask>
+                        </ValidationInput>
                         <Description value='Three digits from the back of the card'/>
                     </div>                            
                 </div>

@@ -16,6 +16,7 @@ class CardForm extends Component {
         cardIssuerName: '',
         cvcCode: '',
         amountToReceive: '',
+        errors: {}
     };    
 
     constructor(props) {
@@ -26,10 +27,7 @@ class CardForm extends Component {
         this.onIssuerNameChange = this.onIssuerNameChange.bind(this);
         this.onCvcChange = this.onCvcChange.bind(this);
         this.onAmountToReceiveChange = this.onAmountToReceiveChange.bind(this);
-    }
-
-    componentDidUpdate() {
-        console.log(this.state);
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
     render() {
@@ -41,10 +39,26 @@ class CardForm extends Component {
             cardIssuerName,
             cvcCode,
             amountToReceive,
+            errors
         } = this.state;
+        const error = Object.keys(errors).length ? errors[Object.keys(errors)[0]] : null;
+        let errorNotification = '';
+        if(error != null) {
+            errorNotification = (
+                <div className='CardFormError'>
+                    <div className='CardFormError-title'>Error:</div>
+                    <div className='CardFormError-value'>{error}</div>
+                </div>
+            );
+        }
         const className = `CardForm ${cardTypePayment ? cardTypePayment : ''} ${cardTypeBank ? cardTypeBank : ''}`;
         return (
-            <form id='card_form' className={className}>
+            <form 
+                id='card_form'
+                className={className}
+                onSubmit={this.onSubmit}
+            >
+                {errorNotification}
                 <div className='Card'>
                     <CardFront 
                         cardNumber={cardNumber}
@@ -55,25 +69,22 @@ class CardForm extends Component {
                         onNumberChange={this.onNumberChange}
                         onExpDateChange={this.onExpDateChange}
                         onIssuerNameChange={this.onIssuerNameChange}
-                    >
-                    </CardFront>
+                        errors={errors}
+                    />                    
                     <CardBack 
                         cvcCode={cvcCode}
-                        onCvcChange={this.onCvcChange}>
-                    </CardBack>
+                        onCvcChange={this.onCvcChange}
+                        errors={errors}
+                    />                    
                 </div>
                 <CardAmount 
                     value={amountToReceive}
                     onChange={this.onAmountToReceiveChange}
+                    errors={errors}
                 >
                 </CardAmount>
                 <div className='CardSubmit'>
-                    <button
-                        type='submit'
-                        // onSumbit={}
-                    >
-                        Pay
-                    </button>
+                    <button type='submit'>Pay</button>
                     <Description value='The details are protected to PCI DSS standart'></Description>
                 </div>
             </form>
@@ -83,7 +94,7 @@ class CardForm extends Component {
     onNumberChange(event) {                         
         const input = event.target;     
         const cardNumber = input.value;        
-        console.log(cardNumber)        
+        //console.log(cardNumber)        
         const newState = {
             cardNumber: cardNumber,
             cardType: null,
@@ -93,7 +104,8 @@ class CardForm extends Component {
             newState.cardTypePayment = cardNumberToPaymentType(trimmedCardNumber);            
             newState.cardTypeBank = cardNumberToBankType(trimmedCardNumber, newState.cardTypePayment);            
         }
-        this.setState(newState);
+        this.setState(newState);        
+        this.resetErrors();
     }
 
     validateExpDate(cardExpDate) {
@@ -101,7 +113,7 @@ class CardForm extends Component {
             return cardExpDate;
         }
         const [month, year] = cardExpDate.split('/');
-        console.log(month);
+        //console.log(month);
         const monthNumber = Number(month);
         const maxMonth = 12;
         if(!Number.isNaN(monthNumber)) {
@@ -149,6 +161,7 @@ class CardForm extends Component {
             cardExpDate: this.validateExpDate(cardExpDate)
         };
         this.setState(newState);
+        this.resetErrors();
     }
 
     onIssuerNameChange(event) {        
@@ -161,6 +174,7 @@ class CardForm extends Component {
             cardIssuerName
         };
         this.setState(newState);
+        this.resetErrors();
     }
 
     onCvcChange(event) {        
@@ -168,17 +182,77 @@ class CardForm extends Component {
         this.setState({
             cvcCode
         });
+        this.resetErrors();
     }
 
     onAmountToReceiveChange(event) {
-        const amountToReceive = event.target.value;
-        if(amountToReceive > Math.pow(10, 14)) {
+        const amountToReceive = Number(event.target.value);
+        if(Number.isNaN(amountToReceive) || amountToReceive > Math.pow(10, 14)) {
             return false;
         }
         this.setState({
             amountToReceive
         });
-    }    
+        this.resetErrors();
+    }
+
+    onSubmit(event) {        
+        event.preventDefault();        
+        if(this.validate()) {
+            const { history } = this.props;
+            const { amountToReceive } = this.state;
+            const code = Math.floor(100000 + Math.random() * 900000);
+            history.push(`/security?${code}`, { amountToReceive });
+        }
+    }
+    
+    validate() {
+        const {
+            cardNumber,
+            cardExpDate,
+            cardIssuerName,
+            cvcCode,
+            amountToReceive,
+        } = this.state;
+        
+        const errors = {};
+        if(cardNumber.replace(/[\s_]/g, '').length < 16) {
+            errors['cardNumber'] = 'Card number is too short';            
+        }
+
+        if(cardExpDate.length !== 5 ) {
+            errors['cardExpDate'] = 'Expiry date is not filled';
+        }
+
+        if(cardIssuerName.split(' ').length < 2) {
+            errors['cardIssuerName'] = 'Name is not filled';
+        }
+
+        if(cvcCode.length !== 3) {
+            errors['cvcCode'] = 'CVC code is not filled';
+        }
+
+        console.log(amountToReceive);
+        if(Number.isNaN(Number(amountToReceive)) ||
+            Number(amountToReceive) <= 0) {
+            errors['amountToReceive'] = 'Enter amount';
+        }
+        
+        this.setState({
+            errors
+        });
+
+        return Object.keys(errors).length === 0;
+    }
+
+    resetErrors() {
+        const { errors } = this.state;
+        if(Object.keys(errors).length) {
+            this.setState({
+                errors: {}}
+            );
+        }
+    }
 }
 
 export default CardForm;
