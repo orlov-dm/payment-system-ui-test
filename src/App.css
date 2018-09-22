@@ -81,7 +81,7 @@ button {
   background-color: var(--olive);
 }
 
-.CardForm.maestro {
+.CardForm.maestro .Card  {
   color: var(--dark-gray);
 }
 .maestro .CardFront {
@@ -243,7 +243,7 @@ button {
   margin-bottom: 1em;
 }
 .CardSubmit .Description {
-  color: var(--light-text-color);
+  color: var(--text-color);
 }
 
 .invalid {
